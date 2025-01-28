@@ -1,4 +1,5 @@
-import httpStatus from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
+
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 const { hash } = bcrypt;
@@ -16,7 +17,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
       return res
-        .status(httpStatus.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ message: "User Not Found" });
     }
 
@@ -27,10 +28,10 @@ const login = async (req, res) => {
 
       user.token = token;
       await user.save();
-      return res.status(httpStatus.OK).json({ token: token });
+      return res.status(StatusCodes.OK).json({ token: token });
     } else {
       return res
-        .status(httpStatus.UNAUTHORIZED)
+        .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid Username or password" });
     }
   } catch (e) {
@@ -45,7 +46,7 @@ const register = async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res
-        .status(httpStatus.FOUND)
+        .status(StatusCodes.FOUND) // 302 or 409 are more appropriate than 302 for "User already exists"
         .json({ message: "User already exists" });
     }
 
@@ -59,9 +60,12 @@ const register = async (req, res) => {
 
     await newUser.save();
 
-    res.status(httpStatus.CREATED).json({ message: "User Registered" });
+    res.status(StatusCodes.CREATED).json({ message: "User Registered" });
   } catch (e) {
-    res.json({ message: `Something went wrong ${e}` });
+    // Send proper status code (500 for server errors)
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: `Something went wrong: ${e.message}` });
   }
 };
 
@@ -90,7 +94,7 @@ const addToHistory = async (req, res) => {
 
     await newMeeting.save();
 
-    res.status(httpStatus.CREATED).json({ message: "Added code to history" });
+    res.status(StatusCodes.CREATED).json({ message: "Added code to history" });
   } catch (e) {
     res.json({ message: `Something went wrong ${e}` });
   }

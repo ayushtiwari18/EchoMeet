@@ -32,25 +32,34 @@ export default function Authentication() {
 
   const { handleRegister, handleLogin } = React.useContext(AuthContext);
 
-  let handleAuth = async () => {
+  const handleAuth = async () => {
     try {
       if (formState === 0) {
         let result = await handleLogin(username, password);
+        // Handle successful login (store JWT, navigate, etc.)
       }
       if (formState === 1) {
+        if (!name || !username || !password) {
+          setError("Please fill in all fields.");
+          return;
+        }
         let result = await handleRegister(name, username, password);
-        console.log(result);
+        setMessage(result.message || "User registered successfully.");
         setUsername("");
-        setMessage(result);
-        setOpen(true);
-        setError("");
-        setFormState(0);
         setPassword("");
+        setName("");
+        setOpen(true);
+        setError(""); // Clear error message
+        setFormState(0); // Switch to sign-in
       }
     } catch (err) {
       console.log(err);
-      let message = err.response.data.message;
-      setError(message);
+      // Check if err.response exists before trying to access err.response.data
+      if (err.response && err.response.data) {
+        setError(err.response.data.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
