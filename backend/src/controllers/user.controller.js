@@ -1,4 +1,4 @@
-import httpStatus from "http-status";
+import httpStatus from "http-status-codes";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 const { hash } = bcrypt;
