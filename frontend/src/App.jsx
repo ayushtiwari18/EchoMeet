@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import Authentication from "./pages/authentication.jsx";
+import { Authentication } from "./pages/login.jsx";
 import VideoMeet from "./pages/VideoMeet";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
